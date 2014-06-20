@@ -20,6 +20,7 @@ def lcdcontrol():
 			lcd.message("Goodbye")
 			sleep(1)
 			lcd.clear()
+			sleep(1)
 		
 		
 	
