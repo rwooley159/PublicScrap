@@ -10,16 +10,17 @@ def lcdcontrol():
 	global t1
 	global onService
 	while run == True:
-		while onService = True
-		lcd.message("Hello")
-		sleep(1)
-		lcd.clear()
-		sleep(1)
-		lcd.clear()	
-		lcd.message("Goodbye")
-		sleep(1)
-		lcd.clear()
+		while onService == True:
+			lcd.message("Hello")
+			sleep(1)
+			lcd.clear()
+			sleep(1)
 		while onService == False:
+			lcd.clear()	
+			lcd.message("Goodbye")
+			sleep(1)
+			lcd.clear()
+		
 		
 	
 		
@@ -32,10 +33,10 @@ def loop():
 	line = raw_input("Input a value:")
 	
 	if line == "False":
-		run = False
+		onService = False
 		print "Run changed to False"
 	if line == "True":
-		run = True
+		onService = True
 		print "Run changed to True"		
 		if not t1.is_alive():
 			t1.start()
