@@ -1,0 +1,44 @@
+def main():
+	wait for barcode input
+	recive barcode input
+	call doSomethingWithBarcode(barcode)
+	# this should loop endlessly
+
+
+
+def doSomethingWithBarcode(barcode):
+	if len(barcode) == 7:
+	#employee badge
+
+	getEmployeeDepartmentAndNumber
+
+	if employeedepartment == 45 or 46 or 47:
+	#maintenance employee
+		if machineNotUnderMaintenance
+			startMaintenance:
+				update lcd with blinking message
+				# this should continue until maintenance ends without blocking calling thread
+		else
+			stopMaintenance:
+				stop blinking lcd
+				#go to "sleep" and wait until we need to update the display again
+	else
+	#regular employee
+	update machinestate with employee number
+		
+
+	
+	if len(barcode) == 13
+	#lot roll
+	update machinestate with roll number
+	
+
+def TroubleOnMachine():
+	update sql with trouble notification
+	update lcd with blinking message
+	# continue this until maintenance is started without blocking calling thread
+
+
+def ErrorRoutine():
+	blink lcd with "error" 8 times
+	return # to main loop
