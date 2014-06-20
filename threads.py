@@ -30,6 +30,7 @@ def lcdcontrol():
 def loop():
 	global run
 	global t1
+	global onService
 	line = raw_input("Input a value:")
 	
 	if line == "False":
