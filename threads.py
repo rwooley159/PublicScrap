@@ -8,19 +8,20 @@ from Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
 def lcdcontrol():
 	global run
 	global t1
+	global onService
 	while run == True:
+		while onService = True
 		lcd.message("Hello")
 		sleep(1)
 		lcd.clear()
 		sleep(1)
-	
-	lcd.clear()	
-	lcd.message("Goodbye")
-	sleep(1)
-	lcd.clear()
-	while run == False:
+		lcd.clear()	
+		lcd.message("Goodbye")
 		sleep(1)
-	lcdcontrol()
+		lcd.clear()
+		while onService == False:
+		
+	
 		
 		
 
@@ -43,6 +44,7 @@ def loop():
 
 lcd = Adafruit_CharLCDPlate()
 run = False
+onService = False
 t1 = threading.Thread(target=lcdcontrol)
 loop()
 
