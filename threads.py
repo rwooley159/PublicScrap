@@ -45,7 +45,7 @@ def loop():
 	loop()
 
 lcd = Adafruit_CharLCDPlate()
-run = False
+run = True
 onService = False
 t1 = threading.Thread(target=lcdcontrol)
 loop()
