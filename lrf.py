@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from time import sleep
 
+doLRO = False
+
 def main():
 	while True:
 		line = raw_input("Please enter a 1 or 0:")		
@@ -13,6 +15,24 @@ def longrunningfunction(invar):
 		sleep(3)
 	# if invar == 0 then return to caller
 	return
+
+def alternatemain():
+	while True:
+		line = raw_input("Please enter a 1 or 0")
+		if int(line) = 0:
+			doLRO = False
+		if int(line) = 1:
+			doLRO = True
+    # now go dispatch async handler BUT I DONT KNOW HOW!!
+	
+def alternatelongrunningoperation():
+	global doLRO
+	while doLRO == True:
+		print "Ok, I am a long running function"
+		sleep(3)
+	return
+
+
 	
 main()
 	
@@ -34,5 +54,7 @@ main()
 #
 # basically need a solution to dispatch LED screen updates while allowing the main
 # thread to continue its execution, taking more input.
+#
+# defined "alternate" methods to hopefully describe the situation... not that they execute.
 #
 # thanks a bunch! - Steve
