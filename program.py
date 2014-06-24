@@ -46,21 +46,20 @@ def actonbarcode(barcode):
 	
 
 def errorHandler(error):
-	conn = pyodbc.connect("DSN=WAGODB;UID=sa;PWD=moldex")
-	cursor = conn.execute("{call dbo.LogError(?, ?)}", machineid, str(error))
-	conn.commit()
-	conn.close()
-	for x in range(0,4):
-		lcd.clear()
-		lcd.backlight(0x01)
-		lcd.message("     ERROR")
-		sleep(.5)
-		lcd.clear()
-		lcd.message("\n     ERROR")
-		sleep(.5)
-		
+	#conn = pyodbc.connect("DSN=WAGODB;UID=sa;PWD=moldex")
+	#cursor = conn.execute("{call dbo.LogError(?, ?)}", machineid, str(error))
+	#conn.commit()
+	#conn.close()
+	#for x in range(0,4):
+	#	lcd.clear()
+	#	lcd.backlight(0x01)
+	#	lcd.message("     ERROR")
+	#	sleep(.5)
+	#	lcd.clear()
+	#	lcd.message("\n     ERROR")
+	#	sleep(.5)		
 	print "WTF"	
-	return
+
 	
 	
 def mainloop():
