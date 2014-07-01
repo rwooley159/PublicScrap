@@ -2,6 +2,7 @@ from threading import Thread
 from time import sleep
 
 
+
 class BaseThread(Thread):
 
     def __init__(self, parent=None):
@@ -24,13 +25,23 @@ class BaseThread(Thread):
 class BarcodeThread(BaseThread):
 
     def run(self):
+		while True:
+			try:
+				#CheckMachineState()
+				barcode = raw_input("This is from Fernando's Code:")
+				#actonbarcode(barcode)
+			except Exception as e:
+				print "Something messed up"
+				#errorHandler(e)
+		#self.interruptible_sleep()  
         # add your barcode scanning code here
         # The following calls can be made to control the state of threads from here
         # self.parent.start_barcode_thread()
         # self.parent.stop_barcode_thread()
         # self.parent.start_service_thread()
         # self.parent.stop_service_thread()
-        self.interruptible_sleep()  # Sleep until thread halt, useful if needed
+        
+        
 
 
 class ServiceThread(BaseThread):
@@ -92,3 +103,5 @@ def main():
     # main_loop.stop_barcode_thread()
     # main_loop.start_service_thread()
     # main_loop.stop_service_thread()
+    
+main()

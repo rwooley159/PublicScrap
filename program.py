@@ -1,15 +1,23 @@
 #!/usr/bin/env python
 from Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
+import RPi.GPIO as GPIO
 import time
 from time import sleep
 import socket
 import pyodbc
 import datetime as dt
-import signal
-import threading
 
+# set up machineid
 machineid = socket.gethostname()
+# set up lcd screen
 lcd = Adafruit_CharLCDPlate()
+
+# set up GPIO pin number by name
+ontSwitch = 8
+
+# set up a bool value for maintenance
+isUnderMaintenance = False
+
 
 			
 			
@@ -23,6 +31,8 @@ def CheckMachineState():
 	cursor = conn.execute("select sku, lotnumber from machinestate where machineid = ?", machineid)
 	
 	row = cursor.fetchone()
+	conn.close()
+	
 	sku = row[0]
 	lot = row[1]
 
@@ -30,7 +40,7 @@ def CheckMachineState():
 	lcd.backlight(Adafruit_CharLCDPlate.TEAL)
 	lcd.message("SKU: " + sku + "\nLot: " + lot)
 	
-	conn.close()
+	
 	
 def toggleMaintenance(state):
 	if state == True:				
@@ -41,9 +51,9 @@ def toggleMaintenance(state):
 			lcd.clear()
 			lcd.backlight(Adafruit_CharLCDPlate.RED)
 			lcd.message("     UNDER \n  MAINTENANCE")
-			sleep(3)
+			sleep(2)
 			CheckMachineState()
-			sleep(3)				
+			sleep(2)				
 		else:
 			CheckMachineState()
 			return 
@@ -51,6 +61,7 @@ def toggleMaintenance(state):
 	
 	
 def actonbarcode(barcode):
+	global isUnderMaintenance
 	try:
 		if len(barcode) == 12:
 			# This is a roll of material, update machine with new roll and lot
@@ -99,11 +110,12 @@ def actonbarcode(barcode):
 			cursor = conn.execute("select cfirstname, clastname, cgroup2 from employee where ncardnum = ?", barcode)	
 			row = cursor.fetchone()
 			firstname = row[0]	
-			lastname = row[1]
+			lastname = row[1]			
 			department = row[2]
+			conn.close()
 			department = department.rstrip()
 			department = department.lstrip()			
-			conn.close()
+			
 			lcd.clear()
 			lcd.message(firstname + "\n" + lastname)
 			sleep(2)
@@ -117,33 +129,36 @@ def actonbarcode(barcode):
 				conn = pyodbc.connect("DSN=WAGODB;UID=sa;PWD=moldex")
 				cursor = conn.execute("select state from machinestate where machineid = ?", machineid)
 				row = cursor.fetchone()
+				conn.close()
 				state = row[0]					
 				
 				if state == 0:
 					print "Starting Maintenance"
+					isUnderMaintenance = True
 					conn = pyodbc.connect("DSN=WAGODB;UID=sa;PWD=moldex")
 					cursor = conn.execute("{call dbo.MaintenanceStart(?, ?)}", machineid, dt.datetime.now())	
-					conn.commit()																	
-					t1 = threading.Thread(target=toggleMaintenance, args=(state,))
-					t1.daemon = True
-					t1.start()
+					conn.commit()	
+					conn.close()																										
+					# TODO: Dispatch async handler to flash led screen
 							
 					
 				if state == 1:
 					print "Ending Maintenance"
+					isUnderMaintenance = False
 					conn = pyodbc.connect("DSN=WAGODB;UID=sa;PWD=moldex")
 					cursor = conn.execute("{call dbo.MaintenanceEnd(?, ?)}", machineid, dt.datetime.now())	
-					conn.commit()										
-					t1 = threading.Thread(target=toggleMaintenance, args=(state,))
-					t1.daemon = True
-					t1.start()
+					conn.commit()
+					conn.close()										
+					# TODO: Dispatch async handler to stop flashing led screen
 					
 						
 					
-			else: # This is NOT a maintenance employee
+			else: 
+				# This is NOT a maintenance employee
 				conn = pyodbc.connect("DSN=WAGODB;UID=sa;PWD=moldex")
 				cursor = conn.execute("{call dbo.EmployeeScan(?, ?, ?)}", machineid, barcode, dt.datetime.now())
 				conn.commit()
+				conn.close()
 				lcd.clear()
 				lcd.backlight(Adafruit_CharLCDPlate.GREEN)
 				lcd.message("SUCCESS!\nBadge Scanned")							
@@ -169,7 +184,24 @@ def errorHandler(error):
 		lcd.message("\n     ERROR")
 		sleep(.5)	
 		
+def ONT(channel):
+	global isUnderMaintenance
+	print "\nOperator Notices Trouble"
+	conn = pyodbc.connect("DSN=WAGODB;UID=sa;PWD=moldex")
+	cursor = conn.execute("{call dbo.ONT(?, ?)}", machineid, dt.datetime.now())
+	conn.commit()
+	conn.close()
 	
+	# TODO: Need the same threading here as well for all UI updating...
+	while 
+		lcd.clear()
+		lcd.backlight(Adafruit_CharLCDPlate.RED)
+		lcd.message("   Maintenance\n     Needed")
+		sleep(1)
+		lcd.clear()
+		lcd.backlight(Adafruit_CharLCDPlate.ON)
+		sleep(1)
+		
 
 	
 	
@@ -185,5 +217,10 @@ def mainloop():
 			
 
 
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(ontSwitch, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # ONT Switch
+GPIO.add_event_detect(ontSwitch, GPIO.RISING, callback=ONT, bouncetime=300)
 
-mainloop()
+
+
+
