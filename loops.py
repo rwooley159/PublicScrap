@@ -77,7 +77,7 @@ class MainLoopThread(BaseThread):
                 pass
 
     def start_service_thread(self):
-        self.stop_barcode_thread()
+        self.stop_service_thread()
         self.service_thread = ServiceThread()
         self.service_thread.start()
 
@@ -103,5 +103,8 @@ def main():
     # main_loop.stop_barcode_thread()
     # main_loop.start_service_thread()
     # main_loop.stop_service_thread()
+<<<<<<< HEAD
     
 main()
+=======
+>>>>>>> fc30befaa92387124e70bd9f8e2dea13a0363bb1
