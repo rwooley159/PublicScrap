@@ -4,9 +4,7 @@ from time import sleep
 isUnderMaintenance = False
 
 
-
 class BaseThread(Thread):
-
     def __init__(self, parent=None):
         super(BaseThread, self).__init__()
         self.parent = parent
@@ -22,9 +20,9 @@ class BaseThread(Thread):
 
     def halt(self):
         self.stay_alive = False
-        
-class MainLoopThread(BaseThread):
 
+
+class MainLoopThread(BaseThread):
     def __init__(self):
         super(MainLoopThread, self).__init__()
         self.barcode_thread = None
@@ -60,40 +58,35 @@ class MainLoopThread(BaseThread):
 main_loop = MainLoopThread()
 
 
-
-
 class ServiceThread(BaseThread):
-
     def run(self):
         global isUnderMaintenance
         while isUnderMaintenance == True:
-			print "Screen Update"
-			sleep(3)
-			
-		
+            print "Screen Update"
+            sleep(3)
+
         self.interruptible_sleep()  # Sleep until thread halt
-        
+
+
 class BarcodeThread(BaseThread):
-	def run(self):
-		global isUnderMaintenance
-		global main_loop
+    def run(self):
+        global isUnderMaintenance
+        global main_loop
+
         while True:
-			barcode = raw_input("Please Scan A Barcode: ")
-			if barcode == str(True):
-				isUnderMaintenance = True
-				print str(isUnderMaintenance)
-				print "Starting Service Thread"
-				main_loop.start_service_thread()
-			else:
-				isUnderMaintenance = False	
-				print str(isUnderMaintenance)
-				print "Stopping Service Thread"	
-				main_loop.stop_service_thread()	
-			
+            barcode = raw_input("Please Scan A Barcode: ")
+            if barcode == str(True):
+                isUnderMaintenance = True
+                print str(isUnderMaintenance)
+                print "Starting Service Thread"
+                main_loop.start_service_thread()
+            else:
+                isUnderMaintenance = False
+                print str(isUnderMaintenance)
+                print "Stopping Service Thread"
+                main_loop.stop_service_thread()
+
         self.interruptible_sleep()  # Sleep until thread halt, useful if needed
-
-
-
 
 
 # Usage example:
@@ -103,6 +96,7 @@ class BarcodeThread(BaseThread):
 def main():
     global main_loop
     main_loop.start_barcode_thread()
+    main_loop.interruptible_sleep()
     #main_loop.start_service_thread()
     # main_loop.interruptible_sleep()
     # from other code, you can call the following methods to control the main loop - remember main_loop must be a global
@@ -110,3 +104,6 @@ def main():
     # main_loop.stop_barcode_thread()
     # main_loop.start_service_thread()
     # main_loop.stop_service_thread()
+
+if __name__ == "__main__":
+    main()
