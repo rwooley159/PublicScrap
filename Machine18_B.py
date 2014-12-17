@@ -299,12 +299,12 @@ class BarcodeThread(BaseThread):
         global needsMaintenance
         global main_loop
         
-        ontSwitch = 11
+        ontSwitch = 18
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(ontSwitch, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.add_event_detect(ontSwitch, GPIO.RISING, callback=ONT, bouncetime=300)
         
-        clickSwitch = 13
+        clickSwitch = 11
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(clickSwitch, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.add_event_detect(clickSwitch, GPIO.RISING, callback=CLICK, bouncetime=300)
